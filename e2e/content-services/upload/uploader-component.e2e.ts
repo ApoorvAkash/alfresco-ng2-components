@@ -317,5 +317,4 @@ describe('Upload component', () => {
         await uploadDialog.displayTooltip();
         await expect(await uploadDialog.getTooltip()).toEqual('Upload location no longer exists [404]');
     });
-
 });

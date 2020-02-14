@@ -17,7 +17,7 @@
 
 import { element, by, browser, ElementFinder, ElementArrayFinder } from 'protractor';
 import {
-    FormControllersPage,
+    TogglePage,
     TaskFiltersCloudComponentPage,
     EditTaskFilterCloudComponentPage,
     BrowserVisibility,
@@ -56,32 +56,32 @@ export class TasksCloudDemoPage {
     visibleCheckbox: ElementFinder = element(by.css(`mat-checkbox[formcontrolname='visible']`));
     filter: ElementFinder = element(by.css(`mat-expansion-panel[data-automation-id='Task Filters']`));
 
-    formControllersPage: FormControllersPage = new FormControllersPage();
+    togglePage: TogglePage = new TogglePage();
 
     editTaskFilterCloud: EditTaskFilterCloudComponentPage = new EditTaskFilterCloudComponentPage();
 
     async disableDisplayTaskDetails(): Promise<void> {
-        await this.formControllersPage.disableToggle(this.displayTaskDetailsToggle);
+        await this.togglePage.disableToggle(this.displayTaskDetailsToggle);
     }
 
     async disableDisplayProcessDetails(): Promise<void> {
-        await this.formControllersPage.disableToggle(this.displayProcessDetailsToggle);
+        await this.togglePage.disableToggle(this.displayProcessDetailsToggle);
     }
 
     async enableMultiSelection(): Promise<void> {
-        await this.formControllersPage.enableToggle(this.multiSelectionToggle);
+        await this.togglePage.enableToggle(this.multiSelectionToggle);
     }
 
     async enableActionMenu(): Promise<void> {
-        await this.formControllersPage.enableToggle(this.actionMenuToggle);
+        await this.togglePage.enableToggle(this.actionMenuToggle);
     }
 
     async enableContextMenu(): Promise<void> {
-        await this.formControllersPage.enableToggle(this.contextMenuToggle);
+        await this.togglePage.enableToggle(this.contextMenuToggle);
     }
 
     async enableTestingMode(): Promise<void> {
-        await this.formControllersPage.enableToggle(this.testingModeToggle);
+        await this.togglePage.enableToggle(this.testingModeToggle);
     }
 
     async clickOnTaskFilter(): Promise<void> {
