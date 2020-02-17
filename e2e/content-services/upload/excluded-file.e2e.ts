@@ -25,9 +25,9 @@ import { FileModel } from '../../models/ACS/fileModel';
 import { AlfrescoApiCompatibility as AlfrescoApi } from '@alfresco/js-api';
 import { DropActions } from '../../actions/drop.actions';
 import { NavigationBarPage } from '../../pages/adf/navigationBarPage';
+import { FolderModel } from '../../models/ACS/folderModel';
 
 describe('Upload component - Excluded Files', () => {
-
     const contentServicesPage = new ContentServicesPage();
     const uploadDialog = new UploadDialog();
     const uploadToggles = new UploadToggles();
@@ -50,6 +50,21 @@ describe('Upload component - Excluded Files', () => {
         'location': browser.params.resources.Files.ADF_DOCUMENTS.PNG.file_location
     });
 
+    const folderUpload = new FolderModel({
+        'name': browser.params.resources.Files.ADF_DOCUMENTS.TEXT_FOLDER.folder_name,
+        'location': browser.params.resources.Files.ADF_DOCUMENTS.TEXT_FOLDER.folder_location
+    });
+
+    const acceptedFileInsideFolder = new FolderModel({
+        name: browser.params.resources.Files.ADF_DOCUMENTS.FILE_ACCEPTED_INSIDE_TEXT_FOLDER.file_name,
+        location: browser.params.resources.Files.ADF_DOCUMENTS.FILE_ACCEPTED_INSIDE_TEXT_FOLDER.file_location
+    });
+
+    const excludedFileInsideFolder = new FolderModel({
+        name: browser.params.resources.Files.ADF_DOCUMENTS.FILE_EXCLUDED_INSIDE_TEXT_FOLDER.file_name,
+        location: browser.params.resources.Files.ADF_DOCUMENTS.FILE_EXCLUDED_INSIDE_TEXT_FOLDER.file_location
+    });
+
     beforeAll(async () => {
         this.alfrescoJsApi = new AlfrescoApi({
             provider: 'ECM',
@@ -63,19 +78,14 @@ describe('Upload component - Excluded Files', () => {
         await this.alfrescoJsApi.login(acsUser.id, acsUser.password);
 
         await loginPage.loginToContentServicesUsingUserModel(acsUser);
-
-        await contentServicesPage.goToDocumentList();
-
     });
 
     afterAll(async () => {
         await navigationBarPage.clickLogoutButton();
-
     });
 
-    afterEach(async () => {
+    beforeEach(async () => {
         await contentServicesPage.goToDocumentList();
-
     });
 
     it('[C279914] Should not allow upload default excluded files using D&D', async () => {
@@ -113,13 +123,27 @@ describe('Upload component - Excluded Files', () => {
         await contentServicesPage.checkContentIsNotDisplayed(txtFileModel.name);
     });
 
+    it('[C260125] Should not upload excluded file when they are in a Folder', async () => {
+        await LocalStorageUtil.setConfigField('files', JSON.stringify({
+            excluded: ['*.cpio'],
+            'match-options': { 'nocase': true }
+        }));
+
+        await uploadToggles.enableFolderUpload();
+        await contentServicesPage.uploadFolder(folderUpload.location);
+        await uploadDialog.clickOnCloseButton();
+        await uploadDialog.dialogIsNotDisplayed();
+
+        await contentServicesPage.openFolder(folderUpload.name);
+        await contentServicesPage.checkContentIsDisplayed(acceptedFileInsideFolder.name);
+        await contentServicesPage.checkContentIsNotDisplayed(excludedFileInsideFolder.name);
+    });
+
     it('[C274688] Should extension type added as excluded and accepted not be uploaded', async () => {
         await LocalStorageUtil.setConfigField('files', JSON.stringify({
             excluded: ['.DS_Store', 'desktop.ini', '*.png'],
             'match-options': { 'nocase': true }
         }));
-
-        await contentServicesPage.goToDocumentList();
 
         await uploadToggles.enableExtensionFilter();
         await browser.sleep(1000);
