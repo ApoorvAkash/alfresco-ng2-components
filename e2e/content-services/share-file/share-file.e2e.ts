@@ -209,7 +209,7 @@ describe('Share file', () => {
             await shareDialog.clickShareLinkButton();
 
             await BrowserActions.closeMenuAndDialogs();
-            await browser.sleep(30000); //it get really long to update the shared link file list
+            await browser.sleep(30000); // it get really long to update the shared link file list
 
             await customSourcesPage.navigateToCustomSources();
             await customSourcesPage.selectSharedLinksSourceType();
