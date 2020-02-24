@@ -590,7 +590,7 @@ export class ContentServicesPage {
     }
 
     async checkSelectedSiteIsDisplayed(siteName): Promise<void> {
-        await this.siteListDropdown.checkSelectedOptionIsDisplayed(siteName);
+        await this.siteListDropdown.checkOptionIsSelected(siteName);
     }
 
     async selectSite(siteName: string): Promise<void> {
